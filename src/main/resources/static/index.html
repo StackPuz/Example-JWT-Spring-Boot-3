@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col mt-5">
+                <div class="d-flex justify-content-center">
+                    <div class="card p-0">
+                        <div class="card-header">
+                            <h3>Home</h3>
+                        </div>
+                        <div class="card-body text-center">
+                            <i id="icon" class="fa fa-times-circle fa-5x mt-3 text-danger"></i>
+                            <p id="message" class="mt-3">
+                                You are currently not logged in.
+                                <br/>
+                                Redirecting to login page in seconds..
+                            </p>
+                            <div id="logout" class="col-12 d-none">
+                                <button class="btn btn-primary w-100" onclick="logout()">Logout</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function init() {
+            fetch('/user', {
+                headers: {
+                    Authorization: 'Bearer ' + localStorage.getItem('token')
+                }
+            }).then(response => {
+                if (response.ok) {
+                    response.json().then(data => {
+                        document.getElementById('icon').className = 'fa fa-check-circle fa-5x mt-3 text-success'
+                        document.getElementById('message').innerText = 'You are currently logged in as: ' + data.name
+                        document.getElementById('logout').classList.remove('d-none')
+                    })
+                }
+                else {
+                    if (response.status === 401) {
+                        setTimeout(() => {
+                            location = '/login.html'
+                        }, 4000)
+                    }
+                    else {
+                        alert(`Error: ${response.status} ${response.statusText}`)
+                    }
+                }
+            })
+        }
+
+        function logout() {
+            localStorage.removeItem('token')
+            location.reload()
+        }
+
+        init()
+    </script>
+</body>

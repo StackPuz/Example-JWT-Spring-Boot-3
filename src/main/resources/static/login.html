@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col mt-5">
+                <div class="d-flex justify-content-center">
+                    <div class="card p-0" style="width: 300px;">
+                        <div class="card-header">
+                            <h3>Login</h3>
+                        </div>
+                        <div class="card-body">
+                            <i class="fa fa-user-circle fa-5x d-block text-center text-secondary"></i>
+                            <form onsubmit="return login()">
+                                <div class="row">
+                                    <div class="mb-3 col-12">
+                                        <label class="form-label" for="user_account_name">User Name</label>
+                                        <input id="name" class="form-control form-control" value="admin" required/>
+                                    </div>
+                                    <div class="mb-3 col-12">
+                                        <label class="form-label" for="user_account_password">Password</label>
+                                        <input id="password" class="form-control form-control" type="password" value="1234" required/>
+                                    </div>
+                                    <div class="col-12">
+                                        <button class="btn btn-primary w-100">Login</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function login() {
+            fetch('/login', {
+                method: 'POST',
+                body: JSON.stringify({
+                    name: document.getElementById('name').value,
+                    password: document.getElementById('password').value
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    response.json().then(data => {
+                        localStorage.setItem('token', data.token)
+                        location = '/'
+                    })
+                }
+                else {
+                    alert(`Error: ${response.status} ${response.statusText}`)
+                }
+            })
+            return false
+        }
+    </script>
+</body>
